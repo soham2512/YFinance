@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/CSS/index.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+    <title>YFinance Analytics</title>
+</head>
+<body>
+
+<div class="header">
+  <a href="/" class="logo">YFinance</a>
+  <div class="header-right">
+    <a class="active" href="#filters">Customizable Graph-1</a>
+      <a class="active ml-2" href="#Histogram">Histogram Graph-2</a>
+  </div>
+</div>
+
+{#---------- chart 1 -----------------#}
+<div class="chartCard">
+
+
+
+    <div class="chartBox ">
+        <h3 class="mb-4 mt-3 text-center"><b>Customizable Graph-1 - Date, Type and Data</b></h3>
+
+        <canvas id="myChart"></canvas>
+
+        <h4 id="filters" class="mb-2 mt-3 text-center"><b>Apply filters below for Customizable Graph-1</b></h4>
+
+        {#            ---------------- chart 1: Select data to display dropdown ------------------#}
+
+        <div class="chartBoxFeatures text-center">
+
+            <div class="selectBox">
+                <h5><b>Select type of Lumber stock data to display : </b>
+                    <select id="LumberDatatype">
+                        <optgroup label="Select Lumber Data">
+                        <option>Lumber Open</option>
+                        <option>Lumber High</option>
+                        <option>Lumber Low</option>
+                        <option>Lumber Close</option>
+                        <option>Lumber Volume</option>
+                        </optgroup>
+                    </select>
+                </h5>
+
+            </div>
+
+        </div>
+
+
+        {#            ---------------- chart 1: Select range for date for custom date data ------------------#}
+
+        <div class="chartBoxFeatures text-center">
+            <h5><b>Date range selector for custom date selection :</b><br></h5>
+            <p>START-DATE - <input onchange="filterData()" type="date" id="startdate" value="">
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                END-DATE - <input onchange="filterData()" type="date" id="enddate" value=""></p>
+        </div>
+
+
+        {#            ---------------- chart 1: Select type of graph to display ------------------#}
+
+        <div class="chartBoxFeatures text-center">
+            <div class="selectBox">
+                <h5><b>Select type of chart you want to display: </b>
+                    <select id="Chartdisplaytype" onchange="changeChart(this)">
+                        <optgroup label="Select Chart">
+                            <option value="line">Line</option>
+                            <option value="bar">Bar</option>
+                            <option value="scatter">Scatter</option>
+                        </optgroup>
+                    </select>
+                </h5>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+{#---------- chart 2 -----------------#}
+<div class="chartCard">
+        <div class="chartBox">
+
+            <h3 id="Histogram" class="mb-4 mt-3 text-center"><b>Histogram Graph-2 (Last 30 days) Live</b></h3>
+
+            <canvas id="myChart2"></canvas>
+
+{#            ---------------- chart 2: Select data to display dropdown ------------------#}
+            <div class="chartBoxFeatures text-center">
+
+            <div class="selectBox">
+                <h5><b>Select Lumber data-type to display last 30 days (updated) Histogram : </b>
+                    <select id="LumberDatatypehist">
+                        <optgroup label="Select Lumber Data">
+                        <option>Lumber Open</option>
+                        <option>Lumber High</option>
+                        <option>Lumber Low</option>
+                        <option>Lumber Close</option>
+                        <option>Lumber Volume</option>
+                        </optgroup>
+                    </select>
+                </h5>
+
+            </div>
+
+        </div>
+        </div>
+
+</div>
+
+</body>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+<!-- Custom JS-->
+<script src="/static/JS/index.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+<script>
+
+    const LumberFinalDate = {{ LumberFinalDate | safe }};
+    const LumberFinalOpen = {{ LumberFinalOpen | safe}};
+    const LumberFinalHigh = {{ LumberFinalHigh | safe}};
+    const LumberFinalLow = {{ LumberFinalLow | safe}};
+    const LumberFinalClose = {{ LumberFinalClose | safe}};
+    const LumberFinalVolume = {{ LumberFinalVolume | safe}};
+
+
+{#    ------ config and config data for graph 1#}
+
+    var config = {
+        type: 'line',
+        data: {
+            labels: LumberFinalDate,
+            datasets: [{
+                data: LumberFinalOpen,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                label: 'Lumber Open'
+            }]
+        },
+        options: {
+            responsive: true,
+            parsing: false,
+
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                scales: {
+                    x: {
+                        type: 'timeseries',
+                        title: {
+                            color: 'red',
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        type: 'timeseries',
+                        title: {
+                            color: 'red',
+                            display: true,
+                            text: 'Lumber Stock Value'
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+
+{#    ------ config and config data for graph 2#}
+
+    var histconfigdata = {
+            labels: LumberFinalDate.slice(-30),
+            datasets: [{
+                data: LumberFinalVolume,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                label: 'Lumber Open'
+            }]
+        };
+
+    var histconfig = {
+        type: 'bar',
+        data: histconfigdata,
+        options: {
+            responsive: true,
+            parsing: false,
+
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                scales: {
+                    x: {
+                        type: 'timeseries',
+                        title: {
+                            color: 'red',
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        type: 'timeseries',
+                        title: {
+                            color: 'red',
+                            display: true,
+                            text: 'Lumber Stock Value'
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+
+{# -------   windows onload function to load the graph1 and graph2  #}
+    window.onload = function () {
+        var ctx = document.getElementById('myChart').getContext('2d');
+        window.myLine = new Chart(ctx, config);
+        var ctxhist= document.getElementById('myChart2').getContext('2d');
+        window.myHist = new Chart(ctxhist, histconfig);
+
+    };
+
+
+
+{# --------------------- settings for customizable graph 1 --------------------   #}
+{#--------------- Filter functions for graph-1 ------------#}
+
+{#    -------- selecting the type of graph to plot and slicing the data based on that. #}
+    const LumberDatatype = document.getElementById('LumberDatatype');
+
+    LumberDatatype.addEventListener('change', LumberDataSelector);
+    function LumberDataSelector() {
+        const selectedlabel = LumberDatatype.options[LumberDatatype.selectedIndex].text;
+        window.myLine.config.data.datasets[0].label = selectedlabel;
+
+        if (selectedlabel === 'Lumber Open') {
+            const selectedLumberOpenData = [...LumberFinalOpen];
+            console.log(selectedLumberOpenData);
+            window.myLine.config.data.datasets[0].data = selectedLumberOpenData;
+            window.myLine.update();
+        }
+
+        if (selectedlabel === 'Lumber High') {
+            const selectedLumberHighData = [...LumberFinalHigh];
+{#            console.log(selectedLumberHighData);#}
+            window.myLine.config.data.datasets[0].data = selectedLumberHighData;
+            window.myLine.update();
+        }
+
+        if (selectedlabel === 'Lumber Low') {
+            const selectedLumberLownData = [...LumberFinalLow];
+{#            console.log(selectedLumberLownData);#}
+            window.myLine.config.data.datasets[0].data = selectedLumberLownData;
+            window.myLine.update();
+        }
+
+        if (selectedlabel === 'Lumber Close') {
+            const selectedLumberCloseData = [...LumberFinalClose];
+{#            console.log(selectedLumberCloseData);#}
+            window.myLine.config.data.datasets[0].data = selectedLumberCloseData;
+            window.myLine.update();
+        }
+
+        if (selectedlabel === 'Lumber Volume') {
+            const selectedLumberVolumeData = [...LumberFinalVolume];
+{#            console.log(selectedLumberVolumeData);#}
+            window.myLine.config.data.datasets[0].data = selectedLumberVolumeData;
+            window.myLine.update();
+        }
+        window.myLine.update();
+    }
+
+{#    -------- filtering the data based on the dates selected by the user. #}
+    function filterData() {
+        const selecteddates = [...LumberFinalDate];
+{#        console.log(selecteddates);#}
+        const startdate = document.getElementById('startdate');
+        const enddate = document.getElementById('enddate');
+
+        //get index number in the date array
+        var indexstartdate = selecteddates.indexOf(startdate.value);
+        var indexenddate = selecteddates.indexOf(enddate.value);
+
+        if (indexstartdate.length === 0){
+            indexstartdate = selecteddates.slice(0);
+        }
+
+        else if (indexenddate.length === 0 || null){
+            indexenddate = selecteddates.slice(-1);
+{#            console.log(indexenddate,indexenddate)#}
+        }
+
+
+        //slice the array for only specific selected dates
+        const filterDate = selecteddates.slice(indexstartdate, indexenddate + 1);
+{#        console.log(filterDate);#}
+
+        //replace the labels in the chart
+        window.myLine.config.data.labels = filterDate;
+        window.myLine.update();
+
+
+        //update the data to be displayed
+        const selectedlabel = LumberDatatype.options[LumberDatatype.selectedIndex].text;
+
+        if (selectedlabel === 'Lumber Open') {
+            const selectedLumberOpenData = [...LumberFinalOpen];
+            const filterLumberOpenData = selectedLumberOpenData.slice(indexstartdate, indexenddate + 1);
+{#            console.log(filterLumberOpenData);#}
+            window.myLine.config.data.datasets[0].data = filterLumberOpenData;
+            window.myLine.update();
+        }
+
+        if (selectedlabel === 'Lumber High') {
+            const selectedLumberHighData = [...LumberFinalHigh];
+            const filterLumberHighData = selectedLumberHighData.slice(indexstartdate, indexenddate + 1);
+{#            console.log(filterLumberHighData);#}
+            window.myLine.config.data.datasets[0].data = filterLumberHighData;
+            window.myLine.update();
+        }
+
+        if (selectedlabel === 'Lumber Low') {
+            const selectedLumberLownData = [...LumberFinalLow];
+            const filterLumberLowData = selectedLumberLownData.slice(indexstartdate, indexenddate + 1);
+{#            console.log(filterLumberLowData);#}
+            window.myLine.config.data.datasets[0].data = filterLumberLowData;
+            window.myLine.update();
+        }
+
+        if (selectedlabel === 'Lumber Close') {
+            const selectedLumberCloseData = [...LumberFinalClose];
+            const filterLumberCloseData = selectedLumberCloseData.slice(indexstartdate, indexenddate + 1);
+{#            console.log(filterLumberCloseData);#}
+            window.myLine.config.data.datasets[0].data = filterLumberCloseData;
+            window.myLine.update();
+        }
+
+        if (selectedlabel === 'Lumber Volume') {
+            const selectedLumberVolumeData = [...LumberFinalVolume];
+            const filterLumberVolumeData = selectedLumberVolumeData.slice(indexstartdate, indexenddate + 1);
+{#            console.log(filterLumberVolumeData);#}
+            window.myLine.config.data.datasets[0].data = filterLumberVolumeData;
+            window.myLine.update();
+        }
+
+
+    }
+
+
+{#    -------- filtering the chart type #}
+    function changeChart(chartType){
+        window.myLine.config.type = chartType.value;
+        window.myLine.update()
+    }
+
+
+{# --------------------- settings for customizable graph 2 --------------------   #}
+{# --------------------- Filter functions for histogram graph 2 --------------------   #}
+
+
+{#    -------- selecting the type of graph to plot and slicing the data based on that. #}
+    const LumberDatatypehist = document.getElementById('LumberDatatypehist');
+    LumberDatatypehist.addEventListener('change', LumberDataSelectorHist);
+    function LumberDataSelectorHist() {
+        const selectedlabel = LumberDatatypehist.options[LumberDatatypehist.selectedIndex].text;
+{#        console.log(selectedlabel);#}
+{#        console.log( window.myHist.config);#}
+        histconfigdata.datasets[0].label=selectedlabel;
+        window.myHist.update();
+
+        if (selectedlabel === 'Lumber Open') {
+            const selectedLumberOpenData = [...LumberFinalOpen];
+{#            console.log(selectedLumberOpenData);#}
+            histconfigdata.datasets[0].data = selectedLumberOpenData.slice(-30);
+            window.myHist.update();
+        }
+
+        if (selectedlabel === 'Lumber High') {
+            const selectedLumberHighData = [...LumberFinalHigh];
+{#            console.log(selectedLumberHighData);#}
+            histconfigdata.datasets[0].data = selectedLumberHighData.slice(-30);
+            window.myHist.update();
+        }
+
+        if (selectedlabel === 'Lumber Low') {
+            const selectedLumberLownData = [...LumberFinalLow];
+{#            console.log(selectedLumberLownData);#}
+            histconfigdata.datasets[0].data = selectedLumberLownData.slice(-30);
+            window.myHist.update();
+        }
+
+        if (selectedlabel === 'Lumber Close') {
+            const selectedLumberCloseData = [...LumberFinalClose];
+{#            console.log(selectedLumberCloseData);#}
+            histconfigdata.datasets[0].data = selectedLumberCloseData.slice(-30);
+            window.myHist.update();
+        }
+
+        if (selectedlabel === 'Lumber Volume') {
+            const selectedLumberVolumeData = [...LumberFinalVolume];
+{#            console.log(selectedLumberVolumeData);#}
+            histconfigdata.datasets[0].data = selectedLumberVolumeData.slice(-30);
+            window.myHist.update();
+        }
+        window.myHist.update();
+    }
+
+
+
+</script>
+
+</html>
