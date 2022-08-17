@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-i@l-u%pn&qs3m$qj2wyjm)(ju&j=vyv1*7vnggqe96^+*$=sqc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['yfinance-analysis.herokuapp.com']
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -133,3 +134,4 @@ TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR , 'static')
 ]
+STATIC_ROOT = BASE_DIR / 'static'
