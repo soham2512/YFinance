@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,9 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-i@l-u%pn&qs3m$qj2wyjm)(ju&j=vyv1*7vnggqe96^+*$=sqc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['yfinance-analysis.herokuapp.com']
+ALLOWED_HOSTS = ['yfinance-analysis.herokuapp.com',
+                 '127.0.0.1']
 
 
 # Application definition
@@ -132,9 +132,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
 
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR , 'static')
-# ]
-STATIC_ROOT = BASE_DIR / 'static'
-
-django_heroku.settings(locals())
+# STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
