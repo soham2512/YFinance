@@ -1,1 +1,1 @@
-web: gunicorn YFinance.wsgi
+web: gunicorn YFinance.wsgi --log-file -
